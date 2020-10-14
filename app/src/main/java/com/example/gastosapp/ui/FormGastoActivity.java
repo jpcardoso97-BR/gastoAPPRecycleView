@@ -34,7 +34,7 @@ public class FormGastoActivity extends AppCompatActivity {
                 Intent intent = new Intent(FormGastoActivity.this,
                         MainActivity.class);
                 intent.putExtra("SALVAR_GASTO", gasto);
-                startActivity(intent);
+                setResult(2, intent);
                 finish();
             }
         });
