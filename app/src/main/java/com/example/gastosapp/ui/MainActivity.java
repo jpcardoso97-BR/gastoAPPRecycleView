@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -16,6 +18,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.gastosapp.ui.Constantes.CHAVE_EDITAR_GASTO;
+import static com.example.gastosapp.ui.Constantes.CHAVE_SALVAR_GASTO;
+import static com.example.gastosapp.ui.Constantes.CODIGO_RETORNA_EDITAR_GASTO;
+import static com.example.gastosapp.ui.Constantes.CODIGO_RETORNA_SALVAR_GASTO;
+import static com.example.gastosapp.ui.Constantes.CODIGO_SOLICITA_SALVAR_GASTO;
 
 public class MainActivity extends AppCompatActivity {
     private ListView listViewGastos;
@@ -41,9 +49,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == 2 && data.hasExtra("SALVAR_GASTO")){
+        if (requestCode == CODIGO_SOLICITA_SALVAR_GASTO &&
+                resultCode == CODIGO_RETORNA_SALVAR_GASTO &&
+                data.hasExtra(CHAVE_SALVAR_GASTO)){
             //salvarGastoFormulario();
-            Gasto gasto =(Gasto) data.getSerializableExtra("SALVAR_GASTO");
+            Gasto gasto =(Gasto) data.getSerializableExtra(CHAVE_SALVAR_GASTO);
             new GastoDAO().inseri(gasto);
             adapter.notifyDataSetChanged();
         }
@@ -56,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, FormGastoActivity.class);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent,CODIGO_SOLICITA_SALVAR_GASTO);
             }
         });
     }
@@ -66,7 +76,20 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<Gasto>(this,
                 android.R.layout.simple_list_item_1,new GastoDAO().recuperTodosGastos());
         listViewGastos.setAdapter(adapter);
+
+        listViewGastos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Gasto gasto = (Gasto) parent.getItemAtPosition(position);
+
+                Intent intent = new Intent(getApplicationContext(), FormGastoActivity.class);
+                intent.putExtra(CHAVE_EDITAR_GASTO, gasto);
+                startActivityForResult(intent, CODIGO_RETORNA_EDITAR_GASTO);
+            }
+        });
     }
+
+    private void geraGastos(int quantidade){}
 
     private void salvarGastoFormulario() {
         Intent intent = getIntent();

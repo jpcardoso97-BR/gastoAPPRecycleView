@@ -4,12 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.gastosapp.R;
 import com.example.gastosapp.model.Gasto;
+
+import static com.example.gastosapp.ui.Constantes.CHAVE_EDITAR_GASTO;
+import static com.example.gastosapp.ui.Constantes.CHAVE_SALVAR_GASTO;
+import static com.example.gastosapp.ui.Constantes.CODIGO_RETORNA_SALVAR_GASTO;
 
 public class FormGastoActivity extends AppCompatActivity {
 
@@ -33,11 +38,18 @@ public class FormGastoActivity extends AppCompatActivity {
                 Gasto gasto =  pegaGastoDoFormulario();
                 Intent intent = new Intent(FormGastoActivity.this,
                         MainActivity.class);
-                intent.putExtra("SALVAR_GASTO", gasto);
-                setResult(2, intent);
+                intent.putExtra(CHAVE_SALVAR_GASTO, gasto);
+                setResult(CODIGO_RETORNA_SALVAR_GASTO, intent);
                 finish();
             }
         });
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(CHAVE_EDITAR_GASTO)){
+            Gasto gasto = (Gasto)intent.getSerializableExtra(CHAVE_EDITAR_GASTO);
+            Log.i("FUNFOU","FUNFOU " + gasto);
+
+        }
     }
 
     private Gasto pegaGastoDoFormulario() {
