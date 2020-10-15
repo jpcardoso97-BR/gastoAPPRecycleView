@@ -19,6 +19,15 @@ public class GastoDAO {
     public void edita(int id, Gasto gasto){
         gastoList.set(id, gasto);
     }
+    public void edita(Gasto gasto){
+        int id = gasto.getId();
+        for (Gasto item: gastoList) {
+            if (item.getId()== id){
+                gastoList.set(id, gasto);
+            }
+        }
+    }
+
 
     public List<Gasto> recuperTodosGastos(){
         return gastoList;

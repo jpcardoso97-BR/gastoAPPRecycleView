@@ -14,6 +14,7 @@ import com.example.gastosapp.model.Gasto;
 
 import static com.example.gastosapp.ui.Constantes.CHAVE_EDITAR_GASTO;
 import static com.example.gastosapp.ui.Constantes.CHAVE_SALVAR_GASTO;
+import static com.example.gastosapp.ui.Constantes.CODIGO_RETORNA_EDITAR_GASTO;
 import static com.example.gastosapp.ui.Constantes.CODIGO_RETORNA_SALVAR_GASTO;
 
 public class FormGastoActivity extends AppCompatActivity {
@@ -24,6 +25,7 @@ public class FormGastoActivity extends AppCompatActivity {
     private EditText editCategoria;
     private EditText editFormaPagamento;
     private Button buttonSalvar;
+    private boolean eFormularioEdicao = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,17 +40,34 @@ public class FormGastoActivity extends AppCompatActivity {
                 Gasto gasto =  pegaGastoDoFormulario();
                 Intent intent = new Intent(FormGastoActivity.this,
                         MainActivity.class);
-                intent.putExtra(CHAVE_SALVAR_GASTO, gasto);
-                setResult(CODIGO_RETORNA_SALVAR_GASTO, intent);
+
+                // Aqui envia um objeto para edição de um gasto
+                if (eFormularioEdicao){
+                    intent.putExtra(CHAVE_EDITAR_GASTO, gasto);
+                    setResult(CODIGO_RETORNA_EDITAR_GASTO,intent);
+                }
+                // Aqui envia um objeto para salvar um novo gasto
+                else{
+                    intent.putExtra(CHAVE_SALVAR_GASTO, gasto);
+                    setResult(CODIGO_RETORNA_SALVAR_GASTO, intent);
+                }
+
                 finish();
             }
         });
 
         Intent intent = getIntent();
         if (intent.hasExtra(CHAVE_EDITAR_GASTO)){
-            Gasto gasto = (Gasto)intent.getSerializableExtra(CHAVE_EDITAR_GASTO);
-            Log.i("FUNFOU","FUNFOU " + gasto);
 
+            eFormularioEdicao = true;
+
+            Gasto gasto = (Gasto)intent.getSerializableExtra(CHAVE_EDITAR_GASTO);
+            //Carregando dados do objeto no formulário
+            editValor.setText(gasto.getValorComoString());
+            editData.setText(gasto.getData());
+            editDescricao.setText(gasto.getDescricao());
+            editCategoria.setText(gasto.getCategoria());
+            editFormaPagamento.setText(gasto.getFormaPagamento());
         }
     }
 
