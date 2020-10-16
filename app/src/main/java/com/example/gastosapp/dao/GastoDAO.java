@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GastoDAO {
+    private static int ultimoId = 0;
     private static List<Gasto> gastoList = new ArrayList<>();
 
     public void inseri(Gasto gasto){
+        gasto.setId(ultimoId);
         gastoList.add(gasto);
+        ultimoId++;
     }
 
     public void remove(int id){

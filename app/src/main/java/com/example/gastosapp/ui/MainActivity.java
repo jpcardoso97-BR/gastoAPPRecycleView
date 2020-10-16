@@ -17,6 +17,8 @@ import com.example.gastosapp.model.Gasto;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
+import java.util.List;
+
 import static com.example.gastosapp.ui.Constantes.CHAVE_EDITAR_GASTO;
 import static com.example.gastosapp.ui.Constantes.CHAVE_SALVAR_GASTO;
 import static com.example.gastosapp.ui.Constantes.CODIGO_RETORNA_EDITAR_GASTO;
@@ -81,16 +83,17 @@ public class MainActivity extends AppCompatActivity {
 
         listViewGastos = findViewById(R.id.mainListViewGastos);
 
+        List<Gasto> gastos = new GastoDAO().recuperTodosGastos();
         adapter = new ArrayAdapter<Gasto>(this,
-                android.R.layout.simple_list_item_1,new GastoDAO().recuperTodosGastos());
+                android.R.layout.simple_list_item_1,gastos);
         listViewGastos.setAdapter(adapter);
 
 
         listViewGastos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Gasto gasto = (Gasto) parent.getItemAtPosition(position);
                 itemPosition = position;
+                Gasto gasto = (Gasto) parent.getItemAtPosition(position);
                 Intent intent = new Intent(getApplicationContext(), FormGastoActivity.class);
                 intent.putExtra(CHAVE_EDITAR_GASTO, gasto);
                 startActivityForResult(intent, CODIGO_SOLICITA_EDITAR_GASTO);

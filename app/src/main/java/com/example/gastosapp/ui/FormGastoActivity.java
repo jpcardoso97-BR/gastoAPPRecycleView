@@ -26,6 +26,8 @@ public class FormGastoActivity extends AppCompatActivity {
     private EditText editFormaPagamento;
     private Button buttonSalvar;
     private boolean eFormularioEdicao = false;
+    private Gasto gasto;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +39,19 @@ public class FormGastoActivity extends AppCompatActivity {
         buttonSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Gasto gasto =  pegaGastoDoFormulario();
+                Gasto gastoAtualizado =  pegaGastoDoFormulario();
                 Intent intent = new Intent(FormGastoActivity.this,
                         MainActivity.class);
 
                 // Aqui envia um objeto para edição de um gasto
                 if (eFormularioEdicao){
-                    intent.putExtra(CHAVE_EDITAR_GASTO, gasto);
+                    gastoAtualizado.setId(gasto.getId());
+                    intent.putExtra(CHAVE_EDITAR_GASTO, gastoAtualizado);
                     setResult(CODIGO_RETORNA_EDITAR_GASTO,intent);
                 }
                 // Aqui envia um objeto para salvar um novo gasto
                 else{
-                    intent.putExtra(CHAVE_SALVAR_GASTO, gasto);
+                    intent.putExtra(CHAVE_SALVAR_GASTO, gastoAtualizado);
                     setResult(CODIGO_RETORNA_SALVAR_GASTO, intent);
                 }
 
@@ -61,7 +64,7 @@ public class FormGastoActivity extends AppCompatActivity {
 
             eFormularioEdicao = true;
 
-            Gasto gasto = (Gasto)intent.getSerializableExtra(CHAVE_EDITAR_GASTO);
+            gasto = (Gasto)intent.getSerializableExtra(CHAVE_EDITAR_GASTO);
             //Carregando dados do objeto no formulário
             editValor.setText(gasto.getValorComoString());
             editData.setText(gasto.getData());
