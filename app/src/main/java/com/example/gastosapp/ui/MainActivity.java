@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 data.hasExtra(CHAVE_EDITAR_GASTO)){
             //salvarGastoFormulario();
             Gasto gasto =(Gasto) data.getSerializableExtra(CHAVE_EDITAR_GASTO);
-            new GastoDAO().edita(gasto.getId(),gasto);
+            new GastoDAO().edita(gasto);
             adapter.notifyDataSetChanged();
         }
 
@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
         listViewGastos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                itemPosition = position;
                 Gasto gasto = (Gasto) parent.getItemAtPosition(position);
                 Intent intent = new Intent(getApplicationContext(), FormGastoActivity.class);
                 intent.putExtra(CHAVE_EDITAR_GASTO, gasto);
