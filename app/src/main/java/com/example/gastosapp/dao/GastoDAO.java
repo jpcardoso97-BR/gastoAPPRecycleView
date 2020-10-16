@@ -16,6 +16,7 @@ public class GastoDAO {
     }
 
     public void remove(int id){
+
         gastoList.remove(id);
     }
 

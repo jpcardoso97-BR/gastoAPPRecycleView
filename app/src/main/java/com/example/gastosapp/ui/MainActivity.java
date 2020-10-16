@@ -1,8 +1,12 @@
 package com.example.gastosapp.ui;
 
 import androidx.annotation.Nullable;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -83,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         listViewGastos = findViewById(R.id.mainListViewGastos);
 
-        List<Gasto> gastos = new GastoDAO().recuperTodosGastos();
+        final List<Gasto> gastos = new GastoDAO().recuperTodosGastos();
         adapter = new ArrayAdapter<Gasto>(this,
                 android.R.layout.simple_list_item_1,gastos);
         listViewGastos.setAdapter(adapter);
@@ -100,6 +104,30 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        listViewGastos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Tem certeza que deseja excluir?")
+                        .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                new GastoDAO().remove(position);
+                                adapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton("NÃO", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                               return;
+                            }
+                        });
+
+                    builder.create().show();
+                return true;
+            }
+        });
+
     }
 
     private void geraGastos(int quantidadeDeGastos){
