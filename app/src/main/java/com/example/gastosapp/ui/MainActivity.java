@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.content.DialogInterface;
@@ -18,6 +20,7 @@ import android.widget.ListView;
 import com.example.gastosapp.R;
 import com.example.gastosapp.dao.GastoDAO;
 import com.example.gastosapp.model.Gasto;
+import com.example.gastosapp.ui.recyclerview.adapter.GastosAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
@@ -31,9 +34,9 @@ import static com.example.gastosapp.ui.Constantes.CODIGO_SOLICITA_EDITAR_GASTO;
 import static com.example.gastosapp.ui.Constantes.CODIGO_SOLICITA_SALVAR_GASTO;
 
 public class MainActivity extends AppCompatActivity {
-    private ListView listViewGastos;
+    private RecyclerView recyclerViewGastos;
     private FloatingActionButton fabNovoGasto;
-    private ArrayAdapter<Gasto> adapter;
+    private GastosAdapter adapter;
     private int itemPosition;
 
     @Override
@@ -85,47 +88,46 @@ public class MainActivity extends AppCompatActivity {
     private void configuraListView() {
         geraGastos(10);
 
-        listViewGastos = findViewById(R.id.mainListViewGastos);
+        recyclerViewGastos = findViewById(R.id.mainRecyclerViewGasto);
+        recyclerViewGastos.setLayoutManager(new LinearLayoutManager(this));
 
         final List<Gasto> gastos = new GastoDAO().recuperTodosGastos();
-        adapter = new ArrayAdapter<Gasto>(this,
-                android.R.layout.simple_list_item_1,gastos);
-        listViewGastos.setAdapter(adapter);
-
-
-        listViewGastos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Gasto gasto = (Gasto) parent.getItemAtPosition(position);
-                Intent intent = new Intent(getApplicationContext(), FormGastoActivity.class);
-                intent.putExtra(CHAVE_EDITAR_GASTO, gasto);
-                startActivityForResult(intent, CODIGO_SOLICITA_EDITAR_GASTO);
-
-            }
-        });
-
-        listViewGastos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage("Tem certeza que deseja excluir?")
-                        .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                new GastoDAO().remove(position);
-                                adapter.notifyDataSetChanged();
-                            }
-                        })
-                        .setNegativeButton("NÃO", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                               return;
-                            }
-                        });
-
-                    builder.create().show();
-                return true;
-            }
-        });
+        adapter = new GastosAdapter(gastos);
+        recyclerViewGastos.setAdapter(adapter);
+//
+//        recyclerViewGastos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Gasto gasto = (Gasto) parent.getItemAtPosition(position);
+//                Intent intent = new Intent(getApplicationContext(), FormGastoActivity.class);
+//                intent.putExtra(CHAVE_EDITAR_GASTO, gasto);
+//                startActivityForResult(intent, CODIGO_SOLICITA_EDITAR_GASTO);
+//
+//            }
+//        });
+//
+//        recyclerViewGastos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+//
+//                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//                builder.setMessage("Tem certeza que deseja excluir?")
+//                        .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                new GastoDAO().remove(position);
+//                                adapter.notifyDataSetChanged();
+//                            }
+//                        })
+//                        .setNegativeButton("NÃO", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                               return;
+//                            }
+//                        });
+//
+//                    builder.create().show();
+//                return true;
+//            }
+//        });
 
     }
 
